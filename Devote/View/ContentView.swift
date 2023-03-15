@@ -11,6 +11,7 @@ import CoreData
 struct ContentView: View {
     // MARK: - PROPERTY
     
+    @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @State var task: String = ""
     @State private var showNewTaskItem: Bool = false
     
@@ -46,6 +47,37 @@ struct ContentView: View {
                 
                 VStack {
                     // MARK: - HEADER
+                    HStack(spacing: 10) {
+                        // TITLE
+                        Text("Devote")
+                            .font(.system(.largeTitle,design: .rounded))
+                            .fontWeight(.heavy)
+                            .padding(.leading, 4)
+                        
+                        Spacer()
+                        
+                        // EDIT BUTTON
+                        EditButton()
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .padding(.horizontal, 10)
+                            .frame(minWidth: 75, minHeight: 29)
+                            .background(
+                                Capsule().stroke(Color.white, lineWidth: 2)
+                            )
+                        
+                        // APPEARANCE BUTTON
+                        Button(action: {
+                            isDarkMode.toggle()
+                        }, label: {
+                            Image(systemName: isDarkMode ? "moon.circle.fill" : "moon.circle")
+                                .resizable()
+                                .frame(width: 29, height: 29)
+                                .font(.system(.title, design: .rounded))
+                        }) //: BUTTON
+                    } //:HSTACK
+                    .padding()
+                    .foregroundColor(.white)
+                    
                     Spacer(minLength: 80)
                     // MARK: - NEW TASK BUTTON
                     
@@ -82,7 +114,7 @@ struct ContentView: View {
                                         Text(item.timestamp!, formatter: itemFormatter)
                                             .font(.footnote)
                                             .foregroundColor(.gray)
-                                    }//: LIST ITEM
+                                    } //: LIST ITEM
                                 }
                                // .listRowBackground(Color.pink)
                             }
@@ -110,24 +142,19 @@ struct ContentView: View {
                     NewTaskItemView(isShowing: $showNewTaskItem)
                 }
                 
-            }//: ZSTACK
+            } //: ZSTACK
             .onAppear() {
                 UITableView.appearance().backgroundColor = UIColor.clear
             }
             .navigationBarTitle("Daily Tasks", displayMode: .large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                        .tint(.black)
-                }
-        }//: TOOLBAR
+            .navigationBarHidden(true)
             .background(
                 BackgroundImageView()
             )
             .background(
                 backgroundGradient.ignoresSafeArea(.all)
             )
-        }//: NAVIGATION
+        } //: NAVIGATION
         .navigationViewStyle(StackNavigationViewStyle())
         
     }
