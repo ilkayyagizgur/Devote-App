@@ -103,20 +103,7 @@ struct ContentView: View {
                     if #available(iOS 16.0, *) {
                         List {
                             ForEach(items) { item in
-                                NavigationLink {
-                                    Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                                } label: {
-                                    VStack(alignment: .leading) {
-                                        Text(item.task ?? "")
-                                            .font(.headline)
-                                            .fontWeight(.bold)
-                                        
-                                        Text(item.timestamp!, formatter: itemFormatter)
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
-                                    } //: LIST ITEM
-                                }
-                               // .listRowBackground(Color.pink)
+                               ListRowItemView(item: item)
                             }
                             .onDelete(perform: deleteItems)
                         }//: LIST
@@ -129,11 +116,16 @@ struct ContentView: View {
                         // Fallback on earlier versions
                     }
                 }//: VSTACK
+                .blur(radius: showNewTaskItem ? 8 : 0, opaque: false)
+                .transition(.move(edge: .bottom))
+                .animation(.easeOut(duration: 0.5), value: showNewTaskItem)
                 
                 // MARK: - NEW TASK ITEM
                 
                 if showNewTaskItem {
-                    BlankView()
+                    BlankView(
+                        backgroundColor: isDarkMode ? Color.black : Color.gray,
+                        backgroundOpacity: isDarkMode ? 0.3 : 0.5)
                         .onTapGesture {
                             withAnimation() {
                                 showNewTaskItem = false
@@ -150,6 +142,7 @@ struct ContentView: View {
             .navigationBarHidden(true)
             .background(
                 BackgroundImageView()
+                    .blur(radius: showNewTaskItem ? 8.0 : 0, opaque: false)
             )
             .background(
                 backgroundGradient.ignoresSafeArea(.all)
